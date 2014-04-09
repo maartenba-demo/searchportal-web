@@ -1,37 +1,43 @@
 <?php
 
 use SearchPortal\Plugins;
-use SearchPortal\Plugins\DummySearchEnginePlugin;
+use SearchPortal\Plugins\SearchEnginePluginInterface;
 
 class HomeController extends BaseController
 {
     public function home()
     {
-//        // find all search engine plugins
-//        $pluginsFolder = realpath(dirname(__FILE__) . '/../plugins');
-//        foreach (new DirectoryIterator($pluginsFolder) as $fileInfo) {
-//            if (!$fileInfo->isDot() && strpos($fileInfo->getFilename(), 'SearchEnginePlugin.php') !== false) {
-//                require_once $fileInfo->getPathname();
-//
-//                $className = str_replace('.php', '', $fileInfo->getFilename());
-//                if (in_array('SearchEnginePluginInterface', class_implements($className, true))) {
-//                    // it's a search class!
-//                }
-//            }
-//            $x = new Plugins\DummySearchEnginePlugin();
-//        }
+        // find all search engine plugins
+        $searchengines = array();
+        $fileName = realpath(dirname(__FILE__) . '/../plugins/plugins.json');
+        /** @var SearchEnginePluginInterface[] $plugins */
+        $plugins = (array)json_decode(file_exists($fileName) ? file_get_contents($fileName) : '[]');
+        foreach ($plugins as $plugin) {
+            $pluginInstance = new $plugin->class;
+            $searchengines[] = (object)array('slug' => $pluginInstance->getSlug(), 'name' => $pluginInstance->getDisplayName());
+        }
 
-        $x = new DummySearchEnginePlugin();
-        $searchengine = (object)array('slug' => $x->getSlug(), 'name' => $x->getDisplayName());
-
-        return View::make('home')->with('searchengines', array($searchengine));;
+        return View::make('home')->with('searchengines', $searchengines);
     }
 
     public function search() {
         $query = Input::get('query');
         $slug = Input::get('slug');
 
-        return Redirect::to($query);
+        // find all search engine plugins
+        $searchengines = array();
+        $fileName = realpath(dirname(__FILE__) . '/../plugins/plugins.json');
+        /** @var SearchEnginePluginInterface[] $plugins */
+        $plugins = (array)json_decode(file_exists($fileName) ? file_get_contents($fileName) : '[]');
+        foreach ($plugins as $plugin) {
+            $pluginInstance = new $plugin->class;
+            if ($pluginInstance->getSlug() == $slug) {
+                return Redirect::away($pluginInstance->constructSearchUrl($query));
+            }
+            $searchengines[] = (object)array('slug' => $pluginInstance->getSlug(), 'name' => $pluginInstance->getDisplayName());
+        }
+
+        return 'Could not perform search.';
     }
 
     public function about()

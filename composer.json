@@ -6,8 +6,9 @@
 	"require": {
 		"laravel/framework": "4.1.*",
 		"astolbov/laravel-css-bootstrap": "dev-master",
-        "maartenballiauw/searchportal-plugin-installers": "dev-master",
-        "maartenballiauw/searchportal-plugin-duckduckgo": "dev-master"
+        "maartenballiauw/searchportal-plugin-duckduckgo": "dev-master",
+        "maartenballiauw/searchportal-plugin-bing": "dev-master",
+        "maartenballiauw/searchportal-plugin-google": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
@@ -42,15 +43,5 @@
 	"config": {
 		"preferred-install": "dist"
 	},
-	"minimum-stability": "dev",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/maartenba-demo/searchportal-plugin-installers"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/maartenba-demo/searchportal-plugin-duckduckgo"
-        }
-    ]
+	"minimum-stability": "dev"
 }
