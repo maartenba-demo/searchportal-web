@@ -1,23 +1,37 @@
 <?php
 
-class HomeController extends BaseController {
+use SearchPortal\Plugins;
+use SearchPortal\Plugins\DummySearchEnginePlugin;
 
-	/*
-	|--------------------------------------------------------------------------
-	| Default Home Controller
-	|--------------------------------------------------------------------------
-	|
-	| You may wish to use controllers instead of, or in addition to, Closure
-	| based routes. That's great! Here is an example controller method to
-	| get you started. To route to this controller, just add the route:
-	|
-	|	Route::get('/', 'HomeController@showWelcome');
-	|
-	*/
-
+class HomeController extends BaseController
+{
     public function home()
     {
-        return View::make('home');
+//        // find all search engine plugins
+//        $pluginsFolder = realpath(dirname(__FILE__) . '/../plugins');
+//        foreach (new DirectoryIterator($pluginsFolder) as $fileInfo) {
+//            if (!$fileInfo->isDot() && strpos($fileInfo->getFilename(), 'SearchEnginePlugin.php') !== false) {
+//                require_once $fileInfo->getPathname();
+//
+//                $className = str_replace('.php', '', $fileInfo->getFilename());
+//                if (in_array('SearchEnginePluginInterface', class_implements($className, true))) {
+//                    // it's a search class!
+//                }
+//            }
+//            $x = new Plugins\DummySearchEnginePlugin();
+//        }
+
+        $x = new DummySearchEnginePlugin();
+        $searchengine = (object)array('slug' => $x->getSlug(), 'name' => $x->getDisplayName());
+
+        return View::make('home')->with('searchengines', array($searchengine));;
+    }
+
+    public function search() {
+        $query = Input::get('query');
+        $slug = Input::get('slug');
+
+        return Redirect::to($query);
     }
 
     public function about()
