@@ -25,7 +25,6 @@ class HomeController extends BaseController
         $slug = Input::get('slug');
 
         // find all search engine plugins
-        $searchengines = array();
         $fileName = realpath(dirname(__FILE__) . '/../plugins/plugins.json');
         /** @var SearchEnginePluginInterface[] $plugins */
         $plugins = (array)json_decode(file_exists($fileName) ? file_get_contents($fileName) : '[]');
