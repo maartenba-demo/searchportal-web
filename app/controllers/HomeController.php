@@ -34,7 +34,6 @@ class HomeController extends BaseController
             if ($pluginInstance->getSlug() == $slug) {
                 return Redirect::away($pluginInstance->constructSearchUrl($query));
             }
-            $searchengines[] = (object)array('slug' => $pluginInstance->getSlug(), 'name' => $pluginInstance->getDisplayName());
         }
 
         return 'Could not perform search.';
